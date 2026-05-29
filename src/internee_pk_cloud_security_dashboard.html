@@ -1,0 +1,241 @@
+
+<h2 class="sr-only">Internee.pk cloud security compliance dashboard — live audit results across AWS, GCP, and Azure including IAM policies, WAF status, backup regions, and security findings</h2>
+<style>
+.tab-btn{padding:8px 16px;font-size:14px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap}
+.tab-btn.active{border-bottom-color:var(--color-border-info);color:var(--color-text-info)}
+.bdg{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;white-space:nowrap}
+.bcr{background:var(--color-background-danger);color:var(--color-text-danger)}
+.bhi{background:var(--color-background-warning);color:var(--color-text-warning)}
+.bmd{background:var(--color-background-info);color:var(--color-text-info)}
+.blo{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.bok{background:var(--color-background-success);color:var(--color-text-success)}
+.btg{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.iok{color:var(--color-text-success)}
+.iwa{color:var(--color-text-warning)}
+.ifa{color:var(--color-text-danger)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px;flex-shrink:0}
+.don{background:var(--color-text-success)}.dof{background:var(--color-border-secondary)}
+</style>
+<div style="padding:1rem 0">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px">
+    <div>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 2px">Cloud security audit</p>
+      <p style="font-size:22px;font-weight:500;margin:0;color:var(--color-text-primary)">Internee.pk security compliance</p>
+    </div>
+    <div style="text-align:right">
+      <span class="bdg bok" style="font-size:12px;padding:5px 10px"><i class="ti ti-radar" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:4px"></i>Live scan</span>
+      <p style="font-size:12px;color:var(--color-text-secondary);margin:5px 0 0">Last updated 3 min ago · May 29, 2026</p>
+    </div>
+  </div>
+
+  <div style="display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem;overflow-x:auto" id="tabs">
+    <button class="tab-btn active" id="t-all" onclick="sw('all')"><i class="ti ti-shield" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>All clouds</button>
+    <button class="tab-btn" id="t-aws" onclick="sw('aws')"><i class="ti ti-cloud" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>AWS</button>
+    <button class="tab-btn" id="t-gcp" onclick="sw('gcp')"><i class="ti ti-cloud" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>GCP</button>
+    <button class="tab-btn" id="t-azure" onclick="sw('azure')"><i class="ti ti-cloud" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:5px"></i>Azure</button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-bottom:1.5rem">
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 6px"><i class="ti ti-shield-check" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:4px"></i>Security score</p>
+      <p id="m-sc" style="font-size:24px;font-weight:500;margin:0;color:var(--color-text-primary)">74%</p>
+      <p style="font-size:11px;color:var(--color-text-warning);margin:4px 0 0"><i class="ti ti-arrow-up" aria-hidden="true"></i> +3% this week</p>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 6px"><i class="ti ti-alert-circle" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:4px"></i>Critical findings</p>
+      <p id="m-cr" style="font-size:24px;font-weight:500;margin:0;color:var(--color-text-danger)">3</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin:4px 0 0">Immediate action</p>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 6px"><i class="ti ti-users" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:4px"></i>IAM compliance</p>
+      <p id="m-ia" style="font-size:24px;font-weight:500;margin:0;color:var(--color-text-primary)">79%</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin:4px 0 0">6 of 9 pass</p>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 6px"><i class="ti ti-shield-lock" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:4px"></i>WAF rules active</p>
+      <p id="m-wf" style="font-size:24px;font-weight:500;margin:0;color:var(--color-text-primary)">18</p>
+      <p style="font-size:11px;color:var(--color-text-success);margin:4px 0 0"><i class="ti ti-check" aria-hidden="true"></i> Monitoring on</p>
+    </div>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 6px"><i class="ti ti-database" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:4px"></i>Backup regions</p>
+      <p id="m-bk" style="font-size:24px;font-weight:500;margin:0;color:var(--color-text-primary)">7/11</p>
+      <p style="font-size:11px;color:var(--color-text-warning);margin:4px 0 0"><i class="ti ti-alert-triangle" aria-hidden="true"></i> 4 uncovered</p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;margin-bottom:1.5rem">
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+      <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>Compliance score — past 30 days</p>
+      <div style="position:relative;width:100%;height:175px">
+        <canvas id="tC" role="img" aria-label="Line chart: AWS, GCP, Azure compliance scores trending upward over 30 days from roughly 60–72% toward 68–79%.">Compliance trend for all three providers over 30 days.</canvas>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+        <span><span style="display:inline-block;width:12px;height:3px;background:#378add;vertical-align:middle;border-radius:2px;margin-right:5px"></span>AWS</span>
+        <span><span style="display:inline-block;width:12px;height:3px;background:#1d9e75;vertical-align:middle;border-radius:2px;margin-right:5px"></span>GCP</span>
+        <span><span style="display:inline-block;width:12px;height:3px;background:#7f77dd;vertical-align:middle;border-radius:2px;margin-right:5px"></span>Azure</span>
+      </div>
+    </div>
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+      <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-chart-pie" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>Findings by severity</p>
+      <div style="position:relative;width:100%;height:145px">
+        <canvas id="sC" role="img" aria-label="Donut chart: 3 critical, 7 high, 9 medium, 12 low findings across all cloud providers.">3 critical, 7 high, 9 medium, 12 low — 31 total.</canvas>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:12px;color:var(--color-text-secondary)">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e24b4a;vertical-align:middle;margin-right:4px"></span>Critical 3</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ef9f27;vertical-align:middle;margin-right:4px"></span>High 7</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#378add;vertical-align:middle;margin-right:4px"></span>Medium 9</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#888780;vertical-align:middle;margin-right:4px"></span>Low 12</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:1.5rem">
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+      <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-key" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>IAM policy compliance</p>
+      <table style="width:100%;font-size:13px;border-collapse:collapse;color:var(--color-text-primary)">
+        <thead><tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+          <th style="text-align:left;font-weight:500;padding:0 0 8px;color:var(--color-text-secondary)">Policy</th>
+          <th style="text-align:center;font-weight:500;padding:0 0 8px;color:var(--color-text-secondary)">AWS</th>
+          <th style="text-align:center;font-weight:500;padding:0 0 8px;color:var(--color-text-secondary)">GCP</th>
+          <th style="text-align:center;font-weight:500;padding:0 0 8px;color:var(--color-text-secondary)">Azure</th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <td style="padding:7px 0">Root / admin MFA</td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <td style="padding:7px 0">Least privilege access</td>
+            <td style="text-align:center"><i class="ti ti-alert-triangle iwa" aria-label="Warning" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <td style="padding:7px 0">Password rotation (90d)</td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-x ifa" aria-label="Fail" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <td style="padding:7px 0">Access key rotation</td>
+            <td style="text-align:center"><i class="ti ti-circle-x ifa" aria-label="Fail" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--color-border-tertiary)">
+            <td style="padding:7px 0">Cross-account boundaries</td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-alert-triangle iwa" aria-label="Warning" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+          </tr>
+          <tr>
+            <td style="padding:7px 0">Service account scoping</td>
+            <td style="text-align:center"><i class="ti ti-circle-check iok" aria-label="Pass" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-circle-x ifa" aria-label="Fail" style="font-size:17px"></i></td>
+            <td style="text-align:center"><i class="ti ti-alert-triangle iwa" aria-label="Warning" style="font-size:17px"></i></td>
+          </tr>
+        </tbody>
+      </table>
+      <button onclick="sendPrompt('Give me step-by-step IAM remediation for Internee.pk: fix least privilege on AWS, GCP password rotation, AWS access key rotation, GCP cross-account boundaries, and service account scoping on GCP + Azure')" style="margin-top:12px;font-size:13px;padding:6px 12px">Remediation steps ↗</button>
+    </div>
+
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+      <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-barrier-block" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>WAF rule status</p>
+      <div style="display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span style="font-size:13px;color:var(--color-text-primary)">SQL injection</span><span class="bdg bok">Active</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span style="font-size:13px;color:var(--color-text-primary)">XSS filtering</span><span class="bdg bok">Active</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span style="font-size:13px;color:var(--color-text-primary)">Rate limiting</span><span class="bdg bok">Active</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span style="font-size:13px;color:var(--color-text-primary)">Bot detection</span><span class="bdg bok">Active</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><span style="font-size:13px;color:var(--color-text-primary)">Geo-restriction</span><span class="bdg bhi">Review</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0"><span style="font-size:13px;color:var(--color-text-primary)">Custom ruleset</span><span class="bdg bcr">Disabled</span></div>
+      </div>
+      <div style="margin-top:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px">
+        <p style="font-size:12px;color:var(--color-text-secondary);margin:0"><i class="ti ti-chart-bar" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i><span style="font-weight:500;color:var(--color-text-primary)">2,847</span> requests blocked today</p>
+      </div>
+      <button onclick="sendPrompt('How do I configure a custom WAF ruleset for Internee.pk on AWS WAF — including OWASP Top 10, geo-blocking, and rate rules?')" style="margin-top:10px;font-size:13px;padding:6px 12px">Configure WAF ↗</button>
+    </div>
+
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+      <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-database" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>Backup regions</p>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:0 0 2px">AWS</p>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>us-east-1 (primary)</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>us-west-2</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>eu-west-1</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-secondary)"><span class="dot dof"></span>ap-southeast-1</div>
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:6px 0 2px">GCP</p>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>us-central1</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-secondary)"><span class="dot dof"></span>europe-west1</div>
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:6px 0 2px">Azure</p>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>East US</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>West Europe</div>
+        <div style="font-size:13px;display:flex;align-items:center;color:var(--color-text-primary)"><span class="dot don"></span>Southeast Asia</div>
+      </div>
+      <button onclick="sendPrompt('Design a multi-region backup strategy for Internee.pk on AWS, GCP, and Azure — covering RTO/RPO targets, replication config, and how to activate ap-southeast-1 and europe-west1')" style="margin-top:10px;font-size:13px;padding:6px 12px">Expand coverage ↗</button>
+    </div>
+  </div>
+
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <p style="font-size:14px;font-weight:500;margin:0;color:var(--color-text-primary)"><i class="ti ti-file-search" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>Recent security findings</p>
+      <div style="display:flex;gap:8px">
+        <select id="fs" onchange="rf()" style="font-size:12px;padding:4px 8px"><option value="">All severity</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+        <select id="fp" onchange="rf()" style="font-size:12px;padding:4px 8px"><option value="">All clouds</option><option value="aws">AWS</option><option value="gcp">GCP</option><option value="azure">Azure</option></select>
+      </div>
+    </div>
+    <div id="findings"></div>
+    <button onclick="sendPrompt('Generate a complete cloud security audit report for Internee.pk with executive summary, risk scoring for all 31 findings, and a 30/60/90-day remediation roadmap')" style="margin-top:12px;font-size:13px;padding:6px 12px">Generate full audit report ↗</button>
+  </div>
+
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem">
+    <p style="font-size:14px;font-weight:500;margin:0 0 1rem;color:var(--color-text-primary)"><i class="ti ti-terminal" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:6px"></i>CloudTrail / audit log feed</p>
+    <div id="logs" style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px;font-family:var(--font-mono);font-size:12px;display:flex;flex-direction:column;gap:5px"></div>
+  </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const PD={all:{sc:'74%',cr:3,ia:'79%',wf:18,bk:'7/11'},aws:{sc:'74%',cr:2,ia:'82%',wf:12,bk:'3/5'},gcp:{sc:'68%',cr:1,ia:'71%',wf:4,bk:'1/3'},azure:{sc:'79%',cr:0,ia:'85%',wf:8,bk:'3/3'}};
+let cur='all';
+function sw(p){cur=p;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('t-'+p).classList.add('active');const d=PD[p];document.getElementById('m-sc').textContent=d.sc;const ce=document.getElementById('m-cr');ce.textContent=d.cr;ce.style.color=d.cr>0?'var(--color-text-danger)':'var(--color-text-success)';document.getElementById('m-ia').textContent=d.ia;document.getElementById('m-wf').textContent=d.wf;document.getElementById('m-bk').textContent=d.bk;rf();}
+const FD=[
+  {sv:'critical',p:'aws',t:'Root account login without MFA detected',r:'Account root',ts:'2h ago',s:'CloudTrail'},
+  {sv:'critical',p:'aws',t:'S3 bucket with public write access exposed',r:'s3://internee-uploads',ts:'4h ago',s:'AWS Config'},
+  {sv:'critical',p:'gcp',t:'Service account has owner-level permissions',r:'svc-app@internee.iam',ts:'6h ago',s:'GCP IAM'},
+  {sv:'high',p:'aws',t:'MFA not enabled for 3 IAM users',r:'dev-team users',ts:'1d ago',s:'IAM Analyzer'},
+  {sv:'high',p:'aws',t:'CloudTrail log validation disabled in us-east-1',r:'us-east-1 trail',ts:'2d ago',s:'CloudTrail'},
+  {sv:'high',p:'gcp',t:'Firewall allows unrestricted SSH from 0.0.0.0/0',r:'default-allow-ssh',ts:'2d ago',s:'VPC Firewall'},
+  {sv:'high',p:'azure',t:'Azure Defender recommendations unaddressed',r:'internee-prod rg',ts:'3d ago',s:'Azure Defender'},
+  {sv:'medium',p:'aws',t:'IAM access keys not rotated in 90+ days',r:'AKIA3X...8P7',ts:'3d ago',s:'IAM'},
+  {sv:'medium',p:'gcp',t:'SSL certificate expiring in 14 days',r:'app.internee.pk',ts:'4d ago',s:'Cert Manager'},
+  {sv:'medium',p:'azure',t:'Key Vault diagnostic settings not enabled',r:'internee-kv',ts:'4d ago',s:'Azure Monitor'},
+  {sv:'low',p:'aws',t:'EBS volume not encrypted at rest',r:'vol-0a1b2c3d4e5f',ts:'5d ago',s:'AWS Config'},
+  {sv:'low',p:'gcp',t:'Unused service account keys detected',r:'3 stale keys',ts:'6d ago',s:'GCP IAM'},
+];
+const SO={critical:0,high:1,medium:2,low:3};
+const SB={critical:'bdg bcr',high:'bdg bhi',medium:'bdg bmd',low:'bdg blo'};
+const SI={critical:'ti-alert-octagon',high:'ti-alert-circle',medium:'ti-alert-triangle',low:'ti-info-circle'};
+const SC={critical:'var(--color-text-danger)',high:'var(--color-text-warning)',medium:'var(--color-text-info)',low:'var(--color-text-secondary)'};
+function rf(){const sv=document.getElementById('fs').value;const pv=document.getElementById('fp').value;const ep=(cur!=='all')?cur:pv;const fl=FD.filter(f=>(!sv||f.sv===sv)&&(!ep||f.p===ep)).sort((a,b)=>SO[a.sv]-SO[b.sv]);const el=document.getElementById('findings');if(!fl.length){el.innerHTML='<p style="font-size:13px;color:var(--color-text-secondary);text-align:center;padding:16px 0">No findings match the selected filters.</p>';return;}el.innerHTML=fl.map(f=>`<div style="display:flex;align-items:flex-start;gap:12px;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)"><i class="ti ${SI[f.sv]}" aria-hidden="true" style="font-size:18px;margin-top:1px;color:${SC[f.sv]};flex-shrink:0"></i><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px"><span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${f.t}</span><span class="${SB[f.sv]}">${f.sv}</span><span class="bdg btg">${f.p.toUpperCase()}</span></div><div style="display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--color-text-secondary)"><span><i class="ti ti-server" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>${f.r}</span><span><i class="ti ti-file" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>${f.s}</span><span><i class="ti ti-clock" aria-hidden="true" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>${f.ts}</span></div></div></div>`).join('');}
+rf();
+const LG=[
+  {t:'14:37:02',lv:'WARN', src:'CloudTrail',    m:'ConsoleLogin — RootAccountUsage — MFA: false — sourceIP: 203.0.113.42'},
+  {t:'14:31:18',lv:'BLOCK',src:'WAF',           m:'Rule SQLi_001 blocked POST /api/login from 198.51.100.7'},
+  {t:'13:58:44',lv:'BLOCK',src:'WAF',           m:'Rate-limit triggered: 203.0.113.99 — 450 req/min exceeded threshold'},
+  {t:'13:12:07',lv:'ERROR',src:'S3 / IAM',      m:'PutBucketPolicy DENIED — s3://internee-uploads — ACL: public-read-write'},
+  {t:'12:45:33',lv:'INFO', src:'GCP Logging',   m:'CreateServiceAccountKey — actor: admin@internee.pk — sa-key-7f3a'},
+  {t:'11:22:19',lv:'WARN', src:'Azure Monitor', m:'ResourceGroupDelete attempted — internee-staging — Role: Contributor'},
+  {t:'10:01:55',lv:'INFO', src:'CloudTrail',    m:'CreateBucket — ap-southeast-1 — ServerSideEncryption: NONE'},
+];
+const LC={WARN:'var(--color-text-warning)',ERROR:'var(--color-text-danger)',BLOCK:'var(--color-text-danger)',INFO:'var(--color-text-secondary)'};
+document.getElementById('logs').innerHTML=LG.map(l=>`<div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span style="color:var(--color-text-tertiary);flex-shrink:0">2026-05-29 ${l.t}</span><span style="font-weight:500;min-width:38px;flex-shrink:0;color:${LC[l.lv]}">${l.lv}</span><span style="color:var(--color-text-info);min-width:85px;flex-shrink:0">${l.src}</span><span style="color:var(--color-text-primary)">${l.m}</span></div>`).join('');
+const dk=matchMedia('(prefers-color-scheme:dark)').matches;
+const gc=dk?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';const tc='#888780';
+function trnd(b,a,sd){const r=n=>{let x=Math.sin(n*9301+sd*49297)*233280;return x-Math.floor(x);};return Array.from({length:30},(_,i)=>+Math.min(100,Math.max(52,b+i*0.4+(r(i)-0.5)*a)).toFixed(1));}
+const lbs=Array.from({length:30},(_,i)=>{const d=new Date('2026-04-30');d.setDate(d.getDate()+i);return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});});
+new Chart(document.getElementById('tC'),{type:'line',data:{labels:lbs,datasets:[{label:'AWS',data:trnd(65,6,1),borderColor:'#378add',backgroundColor:'transparent',tension:0.4,pointRadius:0,borderWidth:2},{label:'GCP',data:trnd(57,7,2),borderColor:'#1d9e75',backgroundColor:'transparent',tension:0.4,pointRadius:0,borderWidth:2},{label:'Azure',data:trnd(71,4,3),borderColor:'#7f77dd',backgroundColor:'transparent',tension:0.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc,font:{size:11},autoSkip:true,maxTicksLimit:6},grid:{color:gc}},y:{ticks:{color:tc,font:{size:11},callback:v=>v+'%'},grid:{color:gc},min:50,max:100}}}});
+new Chart(document.getElementById('sC'),{type:'doughnut',data:{labels:['Critical','High','Medium','Low'],datasets:[{data:[3,7,9,12],backgroundColor:['#e24b4a','#ef9f27','#378add','#888780'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+</script>
