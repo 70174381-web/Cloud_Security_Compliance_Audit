@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useSearchParams, useNavigate } from 'reac
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Shield, Activity, Calendar } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
+import { Analytics } from '@vercel/analytics/react';
 import MetricsGrid from './components/MetricsGrid';
 import ComplianceTrend from './components/ComplianceTrend';
 import FindingsSeverity from './components/FindingsSeverity';
@@ -237,6 +238,7 @@ function App() {
           <Route path="/consultation" element={<ConsultationHub />} />
         </Routes>
       </Suspense>
+      <Analytics />
     </BrowserRouter>
   );
 }
