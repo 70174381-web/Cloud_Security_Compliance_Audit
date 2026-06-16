@@ -12,7 +12,7 @@
 ![WAF Enabled](https://img.shields.io/badge/WAF-Enabled-purple)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Status: Active](https://img.shields.io/badge/Status-Active-blue)
-![🌐 **Live Demo:**](https://cloud-security-compliance-audit.bolt.host/)
+🌐 **Live Demo:**[https://cloud-security-compliance-audit.bolt.host/](https://cloud-security-compliance-audit.bolt.host/)
 
 ---
 
